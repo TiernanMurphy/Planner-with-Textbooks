@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Murph</title>
+    <style>
+        /* ── Base ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background-color: #2d2a2e;
+            color: #fcfcfa;
+            min-height: 100vh;
+        }
+
+        /* ── Nav Toggle ── */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            padding: 1.5rem 1rem 0;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #5b595c;
+            color: #939293;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.5rem 1.8rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .nav-btn:first-child { border-radius: 6px 0 0 6px; }
+        .nav-btn:last-child  { border-radius: 0 6px 6px 0; border-left: none; }
+
+        .nav-btn.active {
+            background-color: #403e41;
+            color: #ffd866;
+            border-color: #ffd866;
+        }
+        .nav-btn:not(.active):hover {
+            background-color: #3a373b;
+            color: #fcfcfa;
+            border-color: #727072;
+        }
+        /* keep adjacent border from doubling */
+        .nav-btn:not(.active) + .nav-btn:not(.active) { border-left: none; }
+
+        /* ── Page Title ── */
+        h1.site-title {
+            text-align: center;
+            font-size: 1.75rem;
+            color: #ffd866;
+            font-weight: 600;
+            padding: 1.2rem 0 0;
+        }
+
+        /* ── Sections ── */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* ──────────────────────────────────
+           PLANNER
+        ────────────────────────────────── */
+        #planner-view {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 1rem 3rem;
+        }
+
+        #planner-view section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #ff6188;
+            font-weight: 600;
+        }
+
+        ul {
+            list-style: none;
+            min-height: 50px;
+            border: 1px solid #5b595c;
+            padding: 1rem;
+            background: #221f22;
+            border-radius: 6px;
+        }
+
+        li {
+            padding: 0.5rem;
+            margin-bottom: 0.4rem;
+            background-color: #403e41;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 4px;
+            cursor: grab;
+            color: #fcfcfa;
+            border: 1px solid #5b595c;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        li:hover { background-color: #4a474a; border-color: #727072; }
+        li.dragging { opacity: 0.5; }
+        li.drag-over { border-top: 3px solid #a9dc76; }
+        li.editing { background-color: #4a474a; border-color: #ffd866; }
+        li.editing input {
+            background: transparent;
+            border: none;
+            color: #fcfcfa;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 1rem;
+            padding: 0;
+            outline: none;
+            flex: 1;
+            margin-left: 0.5rem;
+        }
+        .completed span { text-decoration: line-through; color: #727072; }
+        .hidden { display: none; }
+
+        input[type="text"].task-input {
+            width: 100%;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: #403e41;
+            border: 1px solid #5b595c;
+            border-radius: 4px;
+            color: #fcfcfa;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+        input[type="text"].task-input:focus { outline: none; border-color: #ffd866; }
+        input[type="text"].task-input::placeholder { color: #939293; }
+
+        input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #a9dc76;
+        }
+
+        .add-button {
+            margin-top: 0.3rem;
+            background-color: #a9dc76;
+            border: none;
+            border-radius: 4px;
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
+            color: #2d2a2e;
+            font-weight: 600;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            transition: background-color 0.2s;
+        }
+        .add-button:hover { background-color: #c1e887; }
+
+        /* ──────────────────────────────────
+           TEXTBOOKS
+        ────────────────────────────────── */
+        #textbooks-view {
+            max-width: 960px;
+            margin: 2rem auto;
+            padding: 0 1rem 3rem;
+        }
+
+        .books-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            justify-content: center;
+        }
+
+        .book-card {
+            background: #221f22;
+            border: 1px solid #5b595c;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 140px;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            flex-shrink: 0;
+        }
+        .book-card:hover {
+            transform: translateY(-4px);
+            border-color: #a9dc76;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        .book-card a {
+            display: block;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+        .book-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.2s;
+        }
+        .book-card img[alt="image not found"] {
+            /* style the broken-image placeholder */
+            background: #403e41;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: #727072;
+        }
+
+        .row-label {
+            font-size: 0.75rem;
+            color: #78dce8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 1.5rem 0 0.6rem 0.2rem;
+        }
+        .row-label:first-child { margin-top: 0; }
+    </style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+    <button class="nav-btn active" onclick="switchView('planner')">Planner</button>
+    <button class="nav-btn"        onclick="switchView('textbooks')">Textbooks</button>
+</nav>
+
+<!-- ══════════════════ PLANNER VIEW ══════════════════ -->
+<div id="planner-view" class="view active">
+
+    <section id="mustdo-section">
+        <div class="section-title">Today</div>
+        <ul id="mustdo-list"></ul>
+        <button class="add-button" onclick="toggleInput('mustdo')">Add</button>
+        <input type="text" id="mustdo-input" class="task-input hidden"
+               placeholder="Enter must do task"
+               onkeypress="handleAdd(event, 'mustdo')" />
+    </section>
+
+    <section id="upcoming-section">
+        <div class="section-title">Horizon</div>
+        <ul id="upcoming-list"></ul>
+        <button class="add-button" onclick="toggleInput('upcoming')">Add</button>
+        <input type="text" id="upcoming-input" class="task-input hidden"
+               placeholder="Enter upcoming task"
+               onkeypress="handleAdd(event, 'upcoming')" />
+    </section>
+
+    <section id="notes-section">
+        <div class="section-title">Notes</div>
+        <ul id="notes-list"></ul>
+        <button class="add-button" onclick="toggleInput('notes')">Add</button>
+        <input type="text" id="notes-input" class="task-input hidden"
+               placeholder="Enter note"
+               onkeypress="handleAdd(event, 'notes')" />
+    </section>
+
+</div>
+
+<!-- ══════════════════ TEXTBOOKS VIEW ══════════════════ -->
+<div id="textbooks-view" class="view">
+
+    <p class="row-label">Spring 2026</p>
+    <div class="books-grid">
+
+        <div class="book-card">
+            <a href="https://strahoosh.com/wp-content/uploads/2023/02/Strategic-Management-Text-and-Case-Gregory-Dess-Gerry-McNamara-Alan-Eisner-etc.-z-lib.org_.pdf">
+                <img src="strategicManagement.jpg" alt="image not found">
+            </a>
+        </div>
+
+        <div class="book-card">
+            <a href="file:///Users/tiernanmurphy/Downloads/UNIX%20and%20Linux%20System%20Administration%20Handbook%20by%20Evi%20Nemeth%20et%20al.%20(z-lib.org).pdf">
+                <img src="linuxCover.jpg" alt="image not found">
+            </a>
+        </div>
+
+        <div class="book-card">
+            <a href="https://www.kea.nu/files/textbooks/humblesec/thelinuxcommandline.pdf">
+                <img src="linuxCommand.jpg" alt="image not found">
+            </a>
+        </div>
+
+        <div class="book-card">
+            <a href="https://ebooks.karbust.me/Technology/Computer%20Networking%20A%20Top-Down%20Approach,%208th%20Edition%20by%20James%20F.%20Kurose,%20Keith%20W.%20Ross-Pearson-9780136681557.pdf">
+                <img src="computerNetworking.jpg" alt="image not found">
+            </a>
+        </div>
+
+        <div class="book-card">
+            <a href="https://theswissbay.ch/pdf/Gentoomen%20Library/The%20Actually%20Useful%20Programming%20Library/Design/Designing%20with%20the%20Mind%20in%20Mind%20Simple%20-%20Johnson%20-%20Kaufmann%20%282010%29.pdf">
+                <img src="designingMind.jpg" alt="image not found">
+            </a>
+        </div>
+
+        <div class="book-card">
+            <a href="https://people.cs.georgetown.edu/~clay/classes/spring2010/os/inthebeginning.pdf">
+                <img src=".jpg" alt="image not found">
+            </a>
+        </div>
+
+        <div class="book-card">
+            <a href="https://degankettles.com/systems-analysis-book/">
+                <img src="systems.jpg" alt="image not found">
+            </a>
+        </div>
+
+        <div class="book-card">
+            <a href="https://dl.icdst.org/pdfs/files4/4bb8d08a9b309df7d86e62ec4056ceef.pdf">
+                <img src="everydayDesign.jpg" alt="image not found">
+            </a>
+        </div>
+
+        <div class="book-card">
+            <a href="https://www.are.na/block/188620">
+                <img src="sketching.jpg" alt="image not found">
+            </a>
+        </div>
+
+        <div class="book-card">
+            <a href="https://www.boscogroupofschools.in/starstudentbuilder/educational-theory/E-Books/Students/09%20Emotional%20Design%20Why%20we%20Love%20Or%20Hate%20everyday%20things%20-%20Donald%20Norman.pdf">
+                <img src="emotionalDesign.jpg" alt="image not found">
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- ══════════════════ SCRIPTS ══════════════════ -->
+<script>
+    /* ── View toggle ── */
+    function switchView(view) {
+        document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(`${view}-view`).classList.add('active');
+        const idx = view === 'planner' ? 0 : 1;
+        document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+    }
+
+    /* ── Planner data ── */
+    let data = { mustdo: [], upcoming: [], notes: [] };
+    let draggedElement = null;
+
+    function loadData() {
+        const saved = localStorage.getItem('plannerData');
+        if (saved) data = JSON.parse(saved);
+    }
+
+    function saveData() {
+        localStorage.setItem('plannerData', JSON.stringify(data));
+        renderAll();
+    }
+
+    function toggleInput(section) {
+        const input = document.getElementById(`${section}-input`);
+        input.classList.toggle('hidden');
+        if (!input.classList.contains('hidden')) input.focus();
+    }
+
+    function handleAdd(e, section) {
+        if (e.key === 'Enter') {
+            const input = e.target;
+            const text = input.value.trim();
+            if (text) {
+                if (section === 'mustdo') {
+                    data.mustdo.push({ text, done: false });
+                } else {
+                    data[section].push(text);
+                }
+                input.value = '';
+                input.classList.add('hidden');
+                saveData();
+            }
+        }
+    }
+
+    function renderAll() {
+        renderMustDo();
+        ['upcoming', 'notes'].forEach(section => {
+            const ul = document.getElementById(`${section}-list`);
+            ul.innerHTML = '';
+            data[section].forEach((item, index) => {
+                const li = document.createElement('li');
+                li.draggable = true;
+                li.dataset.section = section;
+                li.dataset.index = index;
+
+                const span = document.createElement('span');
+                span.textContent = item;
+                span.style.flex = '1';
+                span.style.cursor = 'text';
+                span.addEventListener('click', e => { e.stopPropagation(); editItem(li, section, index); });
+
+                li.appendChild(span);
+                li.addEventListener('dragstart', handleDragStart);
+                li.addEventListener('dragend', handleDragEnd);
+                li.addEventListener('dragover', handleDragOver);
+                li.addEventListener('drop', handleDrop);
+                li.addEventListener('dragleave', handleDragLeave);
+                li.oncontextmenu = e => { e.preventDefault(); data[section].splice(index, 1); saveData(); };
+                ul.appendChild(li);
+            });
+        });
+    }
+
+    function renderMustDo() {
+        const list = document.getElementById('mustdo-list');
+        list.innerHTML = '';
+        data.mustdo.forEach((task, index) => {
+            const li = document.createElement('li');
+            li.className = task.done ? 'completed' : '';
+            li.draggable = true;
+            li.dataset.section = 'mustdo';
+            li.dataset.index = index;
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.done;
+            checkbox.onchange = () => { data.mustdo[index].done = checkbox.checked; saveData(); };
+
+            const span = document.createElement('span');
+            span.textContent = task.text;
+            span.style.flex = '1';
+            span.style.marginLeft = '0.5rem';
+            span.style.cursor = 'text';
+            span.addEventListener('click', e => { e.stopPropagation(); editMustDoItem(li, index); });
+
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            li.addEventListener('dragstart', handleDragStart);
+            li.addEventListener('dragend', handleDragEnd);
+            li.addEventListener('dragover', handleDragOver);
+            li.addEventListener('drop', handleDrop);
+            li.addEventListener('dragleave', handleDragLeave);
+            li.addEventListener('dblclick', () => editMustDoItem(li, index));
+            li.oncontextmenu = e => { e.preventDefault(); data.mustdo.splice(index, 1); saveData(); };
+            list.appendChild(li);
+        });
+    }
+
+    function handleDragStart(e) {
+        draggedElement = { section: e.target.dataset.section, index: parseInt(e.target.dataset.index) };
+        e.target.classList.add('dragging');
+    }
+    function handleDragEnd(e) {
+        e.target.classList.remove('dragging');
+        document.querySelectorAll('li').forEach(i => i.classList.remove('drag-over'));
+    }
+    function handleDragOver(e) {
+        e.preventDefault();
+        const target = e.target.closest('li');
+        if (target && !target.classList.contains('dragging')) target.classList.add('drag-over');
+    }
+    function handleDragLeave(e) {
+        const target = e.target.closest('li');
+        if (target) target.classList.remove('drag-over');
+    }
+    function handleDrop(e) {
+        e.preventDefault(); e.stopPropagation();
+        const target = e.target.closest('li');
+        if (!target || !draggedElement) return;
+        target.classList.remove('drag-over');
+
+        const targetSection = target.dataset.section;
+        const targetIndex   = parseInt(target.dataset.index);
+
+        let item = draggedElement.section === 'mustdo'
+            ? data.mustdo[draggedElement.index]
+            : data[draggedElement.section][draggedElement.index];
+
+        if (draggedElement.section === 'mustdo') data.mustdo.splice(draggedElement.index, 1);
+        else data[draggedElement.section].splice(draggedElement.index, 1);
+
+        let insertIndex = targetIndex;
+        if (draggedElement.section === targetSection && draggedElement.index < targetIndex) insertIndex--;
+
+        if (targetSection === 'mustdo') {
+            const newItem = typeof item === 'string' ? { text: item, done: false } : item;
+            data.mustdo.splice(insertIndex, 0, newItem);
+        } else {
+            const newItem = typeof item === 'string' ? item : item.text;
+            data[targetSection].splice(insertIndex, 0, newItem);
+        }
+        draggedElement = null;
+        saveData();
+    }
+
+    function editItem(li, section, index) {
+        if (li.classList.contains('editing')) return;
+        const span = li.querySelector('span');
+        const originalText = span.textContent;
+        li.classList.add('editing'); li.draggable = false;
+
+        const input = document.createElement('input');
+        input.type = 'text'; input.value = originalText;
+        span.replaceWith(input); input.focus(); input.select();
+
+        function finishEdit() {
+            const newText = input.value.trim();
+            if (newText && newText !== originalText) { data[section][index] = newText; saveData(); }
+            else {
+                const newSpan = document.createElement('span');
+                newSpan.textContent = originalText;
+                newSpan.style.flex = '1'; newSpan.style.cursor = 'text';
+                newSpan.addEventListener('click', e => { e.stopPropagation(); editItem(li, section, index); });
+                input.replaceWith(newSpan);
+                li.classList.remove('editing'); li.draggable = true;
+            }
+        }
+        input.addEventListener('blur', finishEdit);
+        input.addEventListener('keypress', e => { if (e.key === 'Enter') input.blur(); });
+    }
+
+    function editMustDoItem(li, index) {
+        if (li.classList.contains('editing')) return;
+        const span = li.querySelector('span');
+        const originalText = span.textContent;
+        li.classList.add('editing'); li.draggable = false;
+
+        const input = document.createElement('input');
+        input.type = 'text'; input.value = originalText;
+        span.replaceWith(input); input.focus(); input.select();
+
+        function finishEdit() {
+            const newText = input.value.trim();
+            if (newText && newText !== originalText) { data.mustdo[index].text = newText; saveData(); }
+            else {
+                const newSpan = document.createElement('span');
+                newSpan.textContent = originalText;
+                newSpan.style.flex = '1'; newSpan.style.marginLeft = '0.5rem'; newSpan.style.cursor = 'text';
+                newSpan.addEventListener('click', e => { e.stopPropagation(); editMustDoItem(li, index); });
+                input.replaceWith(newSpan);
+                li.classList.remove('editing'); li.draggable = true;
+            }
+        }
+        input.addEventListener('blur', finishEdit);
+        input.addEventListener('keypress', e => { if (e.key === 'Enter') input.blur(); });
+    }
+
+    loadData();
+    renderAll();
+</script>
+</body>
+</html>
