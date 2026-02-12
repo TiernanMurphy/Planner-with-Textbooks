@@ -230,6 +230,7 @@
 <nav>
     <button class="nav-btn active" onclick="switchView('planner')">Planner</button>
     <button class="nav-btn"        onclick="switchView('textbooks')">Textbooks</button>
+<!--    <button class="nav-btn"        onclick="switchView('notes')">Notes</button>-->
 </nav>
 
 <!-- ══════════════════ PLANNER VIEW ══════════════════ -->
@@ -267,17 +268,26 @@
 <!-- ══════════════════ TEXTBOOKS VIEW ══════════════════ -->
 <div id="textbooks-view" class="view">
 
+    <div class="search-container">
+        <input
+                type="text"
+                id="search-input"
+                class="search-input"
+                placeholder="Search by title or author..."
+        >
+    </div>
+
     <p class="row-label">Spring 2026</p>
     <div class="books-grid">
 
         <div class="book-card">
-            <a href="https://strahoosh.com/wp-content/uploads/2023/02/Strategic-Management-Text-and-Case-Gregory-Dess-Gerry-McNamara-Alan-Eisner-etc.-z-lib.org_.pdf">
+            <a href="https://strahoosh.com/wp-content/uploads/2023/02/Strategic-Management-Text-and-Case-Gregory-Dess-Gerry-McNamara-Alan-Eisner-etc.-z-lib.org_.pdf" target="_blank">
                 <img src="strategicManagement.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="file:///Users/tiernanmurphy/Downloads/UNIX%20and%20Linux%20System%20Administration%20Handbook%20by%20Evi%20Nemeth%20et%20al.%20(z-lib.org).pdf">
+            <a href="file:///Users/tiernanmurphy/Downloads/UNIX%20and%20Linux%20System%20Administration%20Handbook%20by%20Evi%20Nemeth%20et%20al.%20(z-lib.org).pdf" target="_blank">
                 <img src="linuxCover.jpg" alt="image not found">
             </a>
         </div>
@@ -289,43 +299,43 @@
         </div>
 
         <div class="book-card">
-            <a href="https://ebooks.karbust.me/Technology/Computer%20Networking%20A%20Top-Down%20Approach,%208th%20Edition%20by%20James%20F.%20Kurose,%20Keith%20W.%20Ross-Pearson-9780136681557.pdf">
+            <a href="https://ebooks.karbust.me/Technology/Computer%20Networking%20A%20Top-Down%20Approach,%208th%20Edition%20by%20James%20F.%20Kurose,%20Keith%20W.%20Ross-Pearson-9780136681557.pdf" target="_blank">
                 <img src="computerNetworking.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://theswissbay.ch/pdf/Gentoomen%20Library/The%20Actually%20Useful%20Programming%20Library/Design/Designing%20with%20the%20Mind%20in%20Mind%20Simple%20-%20Johnson%20-%20Kaufmann%20%282010%29.pdf">
+            <a href="https://theswissbay.ch/pdf/Gentoomen%20Library/The%20Actually%20Useful%20Programming%20Library/Design/Designing%20with%20the%20Mind%20in%20Mind%20Simple%20-%20Johnson%20-%20Kaufmann%20%282010%29.pdf" target="_blank">
                 <img src="designingMind.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://people.cs.georgetown.edu/~clay/classes/spring2010/os/inthebeginning.pdf">
+            <a href="https://people.cs.georgetown.edu/~clay/classes/spring2010/os/inthebeginning.pdf" target="_blank">
                 <img src="beginning_command_line.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://degankettles.com/systems-analysis-book/">
+            <a href="https://degankettles.com/systems-analysis-book/" target="_blank">
                 <img src="systems.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://dl.icdst.org/pdfs/files4/4bb8d08a9b309df7d86e62ec4056ceef.pdf">
+            <a href="https://dl.icdst.org/pdfs/files4/4bb8d08a9b309df7d86e62ec4056ceef.pdf" target="_blank">
                 <img src="everydayDesign.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://www.are.na/block/188620">
+            <a href="https://www.are.na/block/188620" target="_blank">
                 <img src="sketching.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://www.boscogroupofschools.in/starstudentbuilder/educational-theory/E-Books/Students/09%20Emotional%20Design%20Why%20we%20Love%20Or%20Hate%20everyday%20things%20-%20Donald%20Norman.pdf">
+            <a href="https://www.boscogroupofschools.in/starstudentbuilder/educational-theory/E-Books/Students/09%20Emotional%20Design%20Why%20we%20Love%20Or%20Hate%20everyday%20things%20-%20Donald%20Norman.pdf" target="_blank">
                 <img src="emotionalDesign.jpg" alt="image not found">
             </a>
         </div>
@@ -334,38 +344,32 @@
     <p class="row-label">Computer Science</p>
     <div class="books-grid">
 
-<!--        <div class="book-card">-->
-<!--            <a href="https://digtvbg.com/files/books-for-hacking/Hackers%20%26%20Painters%20-%20Big%20Ideas%20From%20The%20Computer%20Age%20by%20Paul%20Graham.pdf">-->
-<!--                <img src="hackers_painters.jpg" alt="image not found">-->
-<!--            </a>-->
-<!--        </div>-->
-
         <div class="book-card">
-            <a href="http://www.cesarkallas.net/arquivos/livros/informatica/Addison.Wesley.The.Mythical.Man-Month.Essays.on.Software.Engineering.20th.Anniversary.Edition.pdf">
+            <a href="http://www.cesarkallas.net/arquivos/livros/informatica/Addison.Wesley.The.Mythical.Man-Month.Essays.on.Software.Engineering.20th.Anniversary.Edition.pdf" target="_blank">
                 <img src="mythical_man_month.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://automatetheboringstuff.com/">
+            <a href="https://automatetheboringstuff.com/" target="_blank">
                 <img src="automate_python.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://unidel.edu.ng/focelibrary/books/Algorithms%20for%20Dummies-Wiley%20(2017).pdf">
+            <a href="https://unidel.edu.ng/focelibrary/books/Algorithms%20for%20Dummies-Wiley%20(2017).pdf" target="_blank">
                 <img src="algorithms_for_dummies.jpg" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://seriouscomputerist.atariverse.com/media/pdf/book/C%20Programming%20Language%20-%202nd%20Edition%20(OCR).pdf">
+            <a href="https://seriouscomputerist.atariverse.com/media/pdf/book/C%20Programming%20Language%20-%202nd%20Edition%20(OCR).pdf" target="_blank">
                 <img src="c_programming_language.png" alt="image not found">
             </a>
         </div>
 
         <div class="book-card">
-            <a href="https://indiachinainstitute.org/wp-content/uploads/2018/05/Python-Crash-Course.pdf">
+            <a href="https://indiachinainstitute.org/wp-content/uploads/2018/05/Python-Crash-Course.pdf" target="_blank">
                 <img src="python_crash_course.jpg" alt="image not found">
             </a>
         </div>
@@ -376,32 +380,35 @@
     <p class="row-label">Other</p>
     <div class="books-grid">
         <div class="book-card">
-            <a href="https://digtvbg.com/files/books-for-hacking/Hackers%20%26%20Painters%20-%20Big%20Ideas%20From%20The%20Computer%20Age%20by%20Paul%20Graham.pdf">
+            <a href="https://digtvbg.com/files/books-for-hacking/Hackers%20%26%20Painters%20-%20Big%20Ideas%20From%20The%20Computer%20Age%20by%20Paul%20Graham.pdf" target="_blank">
                 <img src="hackers_painters.jpg" alt="image not found">
             </a>
         </div>
         <div class="book-card">
-            <a href="https://tiue.uz/wp-content/uploads/2024/02/The-Psychology-of-Money-Morgan-Housel.pdf">
+            <a href="https://tiue.uz/wp-content/uploads/2024/02/The-Psychology-of-Money-Morgan-Housel.pdf" target="_blank">
                 <img src="psychology_of_money.jpg" alt="image not found">
             </a>
         </div>
         <div class="book-card">
-            <a href="https://icrrd.com/public/media/01-11-2020-203418Zero%20to%20One.pdf">
+            <a href="https://icrrd.com/public/media/01-11-2020-203418Zero%20to%20One.pdf" target="_blank">
                 <img src="zero_to_one.jpg" alt="image not found">
             </a>
         </div>
         <div class="book-card">
-            <a href="https://lana.safadi.com/ref/The%20Ten%20(10)%20Day%20MBA.pdf">
+            <a href="https://lana.safadi.com/ref/The%20Ten%20(10)%20Day%20MBA.pdf" target="_blank">
                 <img src="ten_day_mba.jpg" alt="image not found">
             </a>
         </div>
         <div class="book-card">
-            <a href="https://drnissani.net/mnissani/RevolutionarysToolkit/TheMoonIsAHarshMistress.pdf">
+            <a href="https://drnissani.net/mnissani/RevolutionarysToolkit/TheMoonIsAHarshMistress.pdf" target="_blank">
                 <img src="moon_harsh_mistress.jpg" alt="image not found">
             </a>
         </div>
     </div>
 </div>
+
+<!-- NOTES VIEW (coming soon) -->
+<div id="notes-view" class="view"></div>
 
 <!-- ══════════════════ SCRIPTS ══════════════════ -->
 <script>
@@ -612,6 +619,20 @@
         }
         input.addEventListener('blur', finishEdit);
         input.addEventListener('keypress', e => { if (e.key === 'Enter') input.blur(); });
+    }
+
+    function setupSearch() {
+        const searchInput = document.getElementById('search-input');
+
+        searchInput.addEventListener('input', function(e) {
+           const searchTerm = e.target.value.toLowerCase().trim();
+           const books = document.querySelectorAll('.book-card');
+           let visibleCount = 0;
+
+           books.forEach(book => {
+
+           });
+        });
     }
 
     loadData();
